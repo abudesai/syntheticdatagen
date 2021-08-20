@@ -1,0 +1,1013 @@
+{
+    "main_params": [
+        {
+            "Parameter_Name": "Dataset_Number",
+            "Parameter_Value": 100,
+            "Parameter_Description": "Name of dataset; the final parquet file name will match this dataset name"
+        },
+        {
+            "Parameter_Name": "Dataset_Name",
+            "Parameter_Value": "Base_scenario",
+            "Parameter_Description": "Name of dataset; the final parquet file name will match this dataset name"
+        },
+        {
+            "Parameter_Name": "Earliest_history_start_date",
+            "Parameter_Value": "01/01/2013",
+            "Parameter_Description": "Data history will start no earlier than this date"
+        },
+        {
+            "Parameter_Name": "Latest_history_start_date",
+            "Parameter_Value": "01/01/2013",
+            "Parameter_Description": "Data history will start no later than this date"
+        },
+        {
+            "Parameter_Name": "Lowest_num_days_in_history",
+            "Parameter_Value": 365,
+            "Parameter_Description": "Number of days of data in history no more than this param. "
+        },
+        {
+            "Parameter_Name": "Highest_num_days_in_history",
+            "Parameter_Value": 365,
+            "Parameter_Description": "Number of days of data in history no less than this param. "
+        },
+        {
+            "Parameter_Name": "Data_granularity_in_minutes",
+            "Parameter_Value": 10,
+            "Parameter_Description": "Time steps will increment in minutes of this parameter. "
+        },
+        {
+            "Parameter_Name": "Day_in_month_threshold_day",
+            "Parameter_Value": 20,
+            "Parameter_Description": "Threshold used in modifying day of month id"
+        },
+        {
+            "Parameter_Name": "Open_hours_allowed",
+            "Parameter_Value": "Any",
+            "Parameter_Description": "Allows [ Weekdays_Only, With_Weekends, Any ] "
+        },
+        {
+            "Parameter_Name": "Random_seed_num",
+            "Parameter_Value": 1,
+            "Parameter_Description": "Use -1 to generate with a random_seed each time, otherwise specify an integer starting from 0"
+        },
+        {
+            "Parameter_Name": "Num_of_Runs",
+            "Parameter_Value": 100,
+            "Parameter_Description": "Number of iterations of runs"
+        }
+    ],
+    "hierarchy_params": [
+        {
+            "Tree_Type": "Organization_hierarchy",
+            "Level_Num": 0,
+            "Min_Count": 1,
+            "Max_Count": 1,
+            "Level_Down_Correlation": 0.0001
+        },
+        {
+            "Tree_Type": "Activity_hierarchy",
+            "Level_Num": 0,
+            "Min_Count": 30,
+            "Max_Count": 30,
+            "Level_Down_Correlation": 0.407
+        }
+    ],
+    "noise": [
+        {
+            "Parameter_Type": "Monthly_Noise",
+            "Distribution_Type": "normal",
+            "Parameter1": 1,
+            "Parameter2": 0.2,
+            "Description": 0.2
+        },
+        {
+            "Parameter_Type": "Daily_Noise",
+            "Distribution_Type": "normal",
+            "Parameter1": 1,
+            "Parameter2": 0.2,
+            "Description": 0.3
+        },
+        {
+            "Parameter_Type": "Time_Interval_Noise",
+            "Distribution_Type": "normal",
+            "Parameter1": 1,
+            "Parameter2": 0.2,
+            "Description": 0.4
+        }
+    ],
+    "magnitude": [
+        {
+            "Parameter_Type": "Org_Magnitude",
+            "Distribution_Type": "uniform",
+            "Parameter1": 60,
+            "Parameter2": 20.0,
+            "Description": "Distribution for the general rate of time-series units per unit time at each org"
+        },
+        {
+            "Parameter_Type": "Activity_Relative_Scaler",
+            "Distribution_Type": "uniform",
+            "Parameter1": 1,
+            "Parameter2": 0.5,
+            "Description": "Relative size factor of each activity common across org nodes. "
+        },
+        {
+            "Parameter_Type": "Org_and_Activity_Scaler",
+            "Distribution_Type": "normal",
+            "Parameter1": 1,
+            "Parameter2": 0.3,
+            "Description": "Random noise factor for each org and activity combination"
+        }
+    ],
+    "weekly_open_hours": [
+        {
+            "Weekly_Hours_Configuration_Num": 360,
+            "mon_open": "00:00:00",
+            "mon_close": "23:59:00",
+            "tue_open": "00:00:00",
+            "tue_close": "23:59:00",
+            "wed_open": "00:00:00",
+            "wed_close": "23:59:00",
+            "thu_open": "00:00:00",
+            "thu_close": "23:59:00",
+            "fri_open": "00:00:00",
+            "fri_close": "23:59:00",
+            "sat_open": "00:00:00",
+            "sat_close": "23:59:00",
+            "sun_open": "00:00:00",
+            "sun_close": "23:59:00",
+            "Has_Weekend_Hours": 1,
+            "Num_Open_Days": 7,
+            "Use_Configuration": 1
+        }
+    ],
+    "special_days": [
+        {
+            "Special_Day_Name": "New Years Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 0,
+            "_Is_Holiday": 0,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 0,
+            "_Is_Holiday": 0,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 1,
+            "_Is_Holiday": 1,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Is_Holiday": 0,
+            "Num_Days_Before": 0,
+            "Num_Days_After": 0,
+            "Impact_Multiplier_Distribution_Type": "normal",
+            "Impact_Multiplier_Distribution_Parameter1": 1,
+            "Impact_Multiplier_Distribution_Parameter2": 0.001,
+            "_Special_Day_Name": 0,
+            "_Is_Holiday": 0,
+            "_Impact_Multiplier_Distribution_Parameter1": 1,
+            "_Impact_Multiplier_Distribution_Parameter2": 0.5
+        }
+    ],
+    "special_days_dates": [
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/25/2013"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/25/2014"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/25/2015"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/26/2016"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/25/2017"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/25/2018"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/25/2019"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/25/2020"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/24/2021"
+        },
+        {
+            "Special_Day_Name": "Christmas Day",
+            "Special_Day_Date": "12/26/2022"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/14/2013"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/13/2014"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/12/2015"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/10/2016"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/09/2017"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/08/2018"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/14/2019"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/12/2020"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/11/2021"
+        },
+        {
+            "Special_Day_Name": "Columbus Day",
+            "Special_Day_Date": "10/10/2022"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2013"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2014"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2015"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2016"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2017"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2018"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2019"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/03/2020"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/05/2021"
+        },
+        {
+            "Special_Day_Name": "Independence Day",
+            "Special_Day_Date": "07/04/2022"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/02/2013"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/01/2014"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/07/2015"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/05/2016"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/04/2017"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/03/2018"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/02/2019"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/07/2020"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/06/2021"
+        },
+        {
+            "Special_Day_Name": "Labor Day",
+            "Special_Day_Date": "09/05/2022"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/18/2013"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/17/2014"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/16/2015"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/15/2016"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/13/2017"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/12/2018"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/18/2019"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/17/2020"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/15/2021"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday1",
+            "Special_Day_Date": "02/14/2022"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/10/2013"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/09/2014"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/08/2015"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/13/2016"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/12/2017"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/11/2018"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/10/2019"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/08/2020"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/14/2021"
+        },
+        {
+            "Special_Day_Name": "Made_Up_Holiday2",
+            "Special_Day_Date": "06/13/2022"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/27/2013"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/26/2014"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/25/2015"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/30/2016"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/29/2017"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/28/2018"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/27/2019"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/25/2020"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/31/2021"
+        },
+        {
+            "Special_Day_Name": "Memorial Day",
+            "Special_Day_Date": "05/30/2022"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/21/2013"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/20/2014"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/19/2015"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/18/2016"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/16/2017"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/15/2018"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/21/2019"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/20/2020"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/18/2021"
+        },
+        {
+            "Special_Day_Name": "MLK Day",
+            "Special_Day_Date": "01/17/2022"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2013"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2014"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2015"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2016"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/02/2017"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2018"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2019"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2020"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "01/01/2021"
+        },
+        {
+            "Special_Day_Name": "New Years Day",
+            "Special_Day_Date": "12/31/2021"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/28/2013"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/27/2014"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/26/2015"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/24/2016"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/23/2017"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/22/2018"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/28/2019"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/26/2020"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/25/2021"
+        },
+        {
+            "Special_Day_Name": "Thanksgiving Day",
+            "Special_Day_Date": "11/24/2022"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2013"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2014"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2015"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2016"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/10/2017"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/12/2018"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2019"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2020"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2021"
+        },
+        {
+            "Special_Day_Name": "Veterans Day",
+            "Special_Day_Date": "11/11/2022"
+        }
+    ],
+    "regular_effects": [
+        {
+            "Effect_Type": "Level",
+            "Effect_Name": "Level",
+            "Initialization_Dist_Type": "normal",
+            "Initialization_Dist_Parameter1": 1,
+            "Initialization_Dist_Parameter2": 0.0001,
+            "Lower_Bound": 0.01,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": 0.1,
+            "Max_Child_Mean_Shift_Factor": 0.01,
+            "_Initialization_Dist_Parameter1": 1.0,
+            "_Initialization_Dist_Parameter2": 1e-05,
+            "_Root_Monthly_Rand_Walk_Factor": 0.05,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": "Trend",
+            "Effect_Name": "Trend_Linear",
+            "Initialization_Dist_Type": "normal",
+            "Initialization_Dist_Parameter1": 0,
+            "Initialization_Dist_Parameter2": 0.2,
+            "Lower_Bound": -100000.0,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": 0.1,
+            "Max_Child_Mean_Shift_Factor": 0.1,
+            "_Initialization_Dist_Parameter1": 0.0,
+            "_Initialization_Dist_Parameter2": 0.1,
+            "_Root_Monthly_Rand_Walk_Factor": 0.05,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": "Trend",
+            "Effect_Name": "Trend_Multiplicative",
+            "Initialization_Dist_Type": "normal",
+            "Initialization_Dist_Parameter1": 1,
+            "Initialization_Dist_Parameter2": 0.0001,
+            "Lower_Bound": -100000.0,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": 0.01,
+            "Max_Child_Mean_Shift_Factor": 0.01,
+            "_Initialization_Dist_Parameter1": 1.0,
+            "_Initialization_Dist_Parameter2": 0.05,
+            "_Root_Monthly_Rand_Walk_Factor": 0.03,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": "Seasonality",
+            "Effect_Name": "Month_of_the_year",
+            "Initialization_Dist_Type": "normal",
+            "Initialization_Dist_Parameter1": 1,
+            "Initialization_Dist_Parameter2": 0.0001,
+            "Lower_Bound": 0.01,
+            "Re-normalize_value": 1.0,
+            "Root_Monthly_Rand_Walk_Factor": 0.01,
+            "Max_Child_Mean_Shift_Factor": 0.01,
+            "_Initialization_Dist_Parameter1": 1.0,
+            "_Initialization_Dist_Parameter2": 0.3,
+            "_Root_Monthly_Rand_Walk_Factor": 0.05,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": "Seasonality",
+            "Effect_Name": "Day_of_the_week",
+            "Initialization_Dist_Type": "normal",
+            "Initialization_Dist_Parameter1": 1,
+            "Initialization_Dist_Parameter2": 0.0001,
+            "Lower_Bound": 0.01,
+            "Re-normalize_value": 1.0,
+            "Root_Monthly_Rand_Walk_Factor": 0.01,
+            "Max_Child_Mean_Shift_Factor": 0.01,
+            "_Initialization_Dist_Parameter1": 1.0,
+            "_Initialization_Dist_Parameter2": 0.3,
+            "_Root_Monthly_Rand_Walk_Factor": 0.05,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": "Seasonality",
+            "Effect_Name": "Day_of_the_month",
+            "Initialization_Dist_Type": "normal",
+            "Initialization_Dist_Parameter1": 1,
+            "Initialization_Dist_Parameter2": 0.0001,
+            "Lower_Bound": 0.01,
+            "Re-normalize_value": 1.0,
+            "Root_Monthly_Rand_Walk_Factor": 0.01,
+            "Max_Child_Mean_Shift_Factor": 0.01,
+            "_Initialization_Dist_Parameter1": 1.0,
+            "_Initialization_Dist_Parameter2": 0.3,
+            "_Root_Monthly_Rand_Walk_Factor": 0.05,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": "Seasonality",
+            "Effect_Name": "Time_of_the_day",
+            "Initialization_Dist_Type": "normal",
+            "Initialization_Dist_Parameter1": 1,
+            "Initialization_Dist_Parameter2": 0.3,
+            "Lower_Bound": 0.01,
+            "Re-normalize_value": 1.0,
+            "Root_Monthly_Rand_Walk_Factor": 0.05,
+            "Max_Child_Mean_Shift_Factor": 0.1,
+            "_Initialization_Dist_Parameter1": 1.0,
+            "_Initialization_Dist_Parameter2": 0.3,
+            "_Root_Monthly_Rand_Walk_Factor": 0.05,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": "Special_Days",
+            "Effect_Name": "Special_Days",
+            "Initialization_Dist_Type": "uniform",
+            "Initialization_Dist_Parameter1": 1,
+            "Initialization_Dist_Parameter2": 0.0001,
+            "Lower_Bound": 0.01,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": 0.01,
+            "Max_Child_Mean_Shift_Factor": 0.01,
+            "_Initialization_Dist_Parameter1": 1.0,
+            "_Initialization_Dist_Parameter2": 0.3,
+            "_Root_Monthly_Rand_Walk_Factor": 0.05,
+            "_Max_Child_Mean_Shift_Factor": 0.1
+        },
+        {
+            "Effect_Type": null,
+            "Effect_Name": null,
+            "Initialization_Dist_Type": null,
+            "Initialization_Dist_Parameter1": null,
+            "Initialization_Dist_Parameter2": null,
+            "Lower_Bound": null,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": null,
+            "Max_Child_Mean_Shift_Factor": null,
+            "_Initialization_Dist_Parameter1": null,
+            "_Initialization_Dist_Parameter2": null,
+            "_Root_Monthly_Rand_Walk_Factor": null,
+            "_Max_Child_Mean_Shift_Factor": null
+        },
+        {
+            "Effect_Type": null,
+            "Effect_Name": null,
+            "Initialization_Dist_Type": null,
+            "Initialization_Dist_Parameter1": null,
+            "Initialization_Dist_Parameter2": null,
+            "Lower_Bound": null,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": null,
+            "Max_Child_Mean_Shift_Factor": null,
+            "_Initialization_Dist_Parameter1": null,
+            "_Initialization_Dist_Parameter2": null,
+            "_Root_Monthly_Rand_Walk_Factor": null,
+            "_Max_Child_Mean_Shift_Factor": null
+        },
+        {
+            "Effect_Type": 1,
+            "Effect_Name": "inter-series correlations",
+            "Initialization_Dist_Type": null,
+            "Initialization_Dist_Parameter1": "sine, stock, energy",
+            "Initialization_Dist_Parameter2": null,
+            "Lower_Bound": null,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": null,
+            "Max_Child_Mean_Shift_Factor": null,
+            "_Initialization_Dist_Parameter1": null,
+            "_Initialization_Dist_Parameter2": null,
+            "_Root_Monthly_Rand_Walk_Factor": null,
+            "_Max_Child_Mean_Shift_Factor": null
+        },
+        {
+            "Effect_Type": 2,
+            "Effect_Name": "inter-feature correlations",
+            "Initialization_Dist_Type": null,
+            "Initialization_Dist_Parameter1": null,
+            "Initialization_Dist_Parameter2": null,
+            "Lower_Bound": null,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": null,
+            "Max_Child_Mean_Shift_Factor": null,
+            "_Initialization_Dist_Parameter1": null,
+            "_Initialization_Dist_Parameter2": null,
+            "_Root_Monthly_Rand_Walk_Factor": null,
+            "_Max_Child_Mean_Shift_Factor": null
+        },
+        {
+            "Effect_Type": 3,
+            "Effect_Name": "specific time-effects commonly seen in retail",
+            "Initialization_Dist_Type": null,
+            "Initialization_Dist_Parameter1": null,
+            "Initialization_Dist_Parameter2": null,
+            "Lower_Bound": null,
+            "Re-normalize_value": null,
+            "Root_Monthly_Rand_Walk_Factor": null,
+            "Max_Child_Mean_Shift_Factor": null,
+            "_Initialization_Dist_Parameter1": null,
+            "_Initialization_Dist_Parameter2": null,
+            "_Root_Monthly_Rand_Walk_Factor": null,
+            "_Max_Child_Mean_Shift_Factor": null
+        }
+    ],
+    "irregular_effects": [
+        {
+            "Effect_Type": "anomaly",
+            "Effect_Name": "anomalous_days_drop",
+            "Apply_Effect?": 0,
+            "Poisson_Rate_Per_Year": 0.0833333333,
+            "Min_Effect_Duration": 1.0,
+            "Max_Effect_Duration": 3.0,
+            "Effect_Duration_Time_Unit": "days",
+            "Min_Effect_Multiplier": 2.0,
+            "Max_Effect_Multiplier": 3.0,
+            "Description": "currently only applied in isolation to each leaf series; might want to add functionality to implement at upper tree levels and propagate to children activities/orgs "
+        },
+        {
+            "Effect_Type": "anomaly",
+            "Effect_Name": "anomalous_intervals_drop",
+            "Apply_Effect?": 0,
+            "Poisson_Rate_Per_Year": 0.125,
+            "Min_Effect_Duration": 3.0,
+            "Max_Effect_Duration": 7.0,
+            "Effect_Duration_Time_Unit": "time_intervals",
+            "Min_Effect_Multiplier": 0.05,
+            "Max_Effect_Multiplier": 0.1,
+            "Description": "currently only applied in isolation to each leaf series; might want to add functionality to implement at upper tree levels and propagate to children activities/orgs "
+        },
+        {
+            "Effect_Type": "anomaly",
+            "Effect_Name": "anomalous_days_spike",
+            "Apply_Effect?": 0,
+            "Poisson_Rate_Per_Year": 0.0833333333,
+            "Min_Effect_Duration": 2.0,
+            "Max_Effect_Duration": 2.0,
+            "Effect_Duration_Time_Unit": "days",
+            "Min_Effect_Multiplier": 4.0,
+            "Max_Effect_Multiplier": 5.0,
+            "Description": "currently only applied in isolation to each leaf series; might want to add functionality to implement at upper tree levels and propagate to children activities/orgs "
+        },
+        {
+            "Effect_Type": "level_shift",
+            "Effect_Name": "level_shift_drop",
+            "Apply_Effect?": 0,
+            "Poisson_Rate_Per_Year": 0.2,
+            "Min_Effect_Duration": null,
+            "Max_Effect_Duration": null,
+            "Effect_Duration_Time_Unit": "days",
+            "Min_Effect_Multiplier": 0.1,
+            "Max_Effect_Multiplier": 0.3,
+            "Description": "currently only applied in isolation to each leaf series; might want to add functionality to implement at upper tree levels and propagate to children activities/orgs "
+        },
+        {
+            "Effect_Type": "level_shift",
+            "Effect_Name": "level_shift_bump",
+            "Apply_Effect?": 0,
+            "Poisson_Rate_Per_Year": 0.0666666667,
+            "Min_Effect_Duration": null,
+            "Max_Effect_Duration": null,
+            "Effect_Duration_Time_Unit": "days",
+            "Min_Effect_Multiplier": 4.0,
+            "Max_Effect_Multiplier": 5.0,
+            "Description": "currently only applied in isolation to each leaf series; might want to add functionality to implement at upper tree levels and propagate to children activities/orgs "
+        },
+        {
+            "Effect_Type": "missing_data",
+            "Effect_Name": "missing_days",
+            "Apply_Effect?": 0,
+            "Poisson_Rate_Per_Year": 0.0666666667,
+            "Min_Effect_Duration": 1.0,
+            "Max_Effect_Duration": 3.0,
+            "Effect_Duration_Time_Unit": "days",
+            "Min_Effect_Multiplier": null,
+            "Max_Effect_Multiplier": null,
+            "Description": null
+        },
+        {
+            "Effect_Type": "missing_data",
+            "Effect_Name": "missing_intervals",
+            "Apply_Effect?": 0,
+            "Poisson_Rate_Per_Year": 0.0666666667,
+            "Min_Effect_Duration": 3.0,
+            "Max_Effect_Duration": 7.0,
+            "Effect_Duration_Time_Unit": "time_intervals",
+            "Min_Effect_Multiplier": null,
+            "Max_Effect_Multiplier": null,
+            "Description": null
+        }
+    ]
+}

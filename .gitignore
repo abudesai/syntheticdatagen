@@ -1,0 +1,13 @@
+
+data_generators/c_rnn_gan_2/data/
+data_generators/c_rnn_gan_2/outputs/
+data_generators/monte_carlo/outputs/
+data_generators/monte_carlo/outputs_multi/
+data_generators/time_vae/datasets/
+data_generators/time_vae/outputs/
+data_generators/time_vae/trained_models/
+
+forecast_models/nbeats/outputs/
+
+__pycache__/
+*.pyc
