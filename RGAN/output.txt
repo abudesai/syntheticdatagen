@@ -1,0 +1,14 @@
+All imports worked
+Loading settings from ./experiments/settings/mnistfull.txt
+dp not found in loaded settings - adopting value from command line defaults:  False
+l2norm_bound not found in loaded settings - adopting value from command line defaults:  1e-05
+batches_per_lot not found in loaded settings - adopting value from command line defaults:  1
+dp_sigma not found in loaded settings - adopting value from command line defaults:  1e-05
+==========================still running here.==========================
+the current seeting_file is: 
+Ready to run with settings:
+[[0. 0. 0. 0. 0. 1. 0. 0. 0. 0.]
+ [0. 0. 0. 1. 0. 0. 0. 0. 0. 0.]
+ [1. 0. 0. 0. 0. 0. 0. 0. 0. 0.]
+ [0. 0. 0. 0. 0. 0. 0. 0. 0. 1.]]
+Sampling 4 samples from mnistfull at epoch 450
