@@ -17,6 +17,8 @@ from vae_base import BaseVariationalAutoencoder, Sampling
 
 
 
+
+
 class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):    
 
 
