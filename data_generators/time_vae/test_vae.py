@@ -10,9 +10,10 @@ import numpy as np , pandas as pd
 import time
 import joblib
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from vae_dense_model import VariationalAutoencoderDense as VAE_Dense
 from vae_conv_model import VariationalAutoencoderConv as VAE_Conv
+from vae_conv_I_model import VariationalAutoencoderConvInterpretable as VAE_ConvI
 from vae_wrapper import VAE_Wrapper
 from config import config as cfg
 import utils
@@ -26,10 +27,10 @@ if __name__ == '__main__':
     data_dir = './datasets/'
     # ----------------------------------------------------------------------------------
     
-    dataset = 'sine'            # stocks, energy
+    dataset = 'energy'            # sine, stocks, energy
     perc_of_train_used = 5                    # 5, 10, 20, 100    
     valid_perc = 0.1
-    vae_type = 'conv'
+    vae_type = 'convI'           # dense, conv, convI
     # ----------------------------------------------------------------------------------
     # read data
     input_file = f'{dataset}_subsampled_train_perc_{perc_of_train_used}.npy'
@@ -61,42 +62,52 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------
     # instantiate the model     
     
-    latent_dim = 2
+    latent_dim = 8
 
     if vae_type == 'dense': 
         vae = VAE_Dense( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[200,100], )
     elif vae_type == 'conv':
         vae = VAE_Conv( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[100, 200] )
+    elif vae_type == 'convI':
+        vae = VAE_ConvI( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[100, 200],  
+            # trend_poly=2, 
+            # num_gen_seas=3,
+            custom_seas = [ (7, 1), [30, 1], (12, 30)],     # tuples of (num_of_seasons, len_per_season)
+            use_residual_conn = False
+            )
     else:  raise Exception('wut')
 
+    
     vae.compile(optimizer=Adam())
     # vae.summary() ; sys.exit()
 
     early_stop_loss = 'loss'
     early_stop_callback = EarlyStopping(monitor=early_stop_loss, min_delta = 1e-1, patience=25) 
+    reduceLR = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=10)
 
-    vae.fit(
-        scaled_train_data, 
-        batch_size = 128,
-        epochs=500,
-        shuffle = True,
-        callbacks=[early_stop_callback],
-        verbose = 1
-    )
+    # vae.fit(
+    #     scaled_train_data, 
+    #     batch_size = 32,
+    #     epochs=1000,
+    #     shuffle = True,
+    #     callbacks=[early_stop_callback, reduceLR],
+    #     verbose = 1
+    # )
 
-    # ----------------------------------------------------------------------------------
+    # # ----------------------------------------------------------------------------------
     # visually check reconstruction 
     X = scaled_train_data
     # X = scaled_valid_data
 
     x_decoded = vae.predict(scaled_train_data)
-    print('x_decoded.shape', x_decoded.shape)
+    print('x_decoded.shape', x_decoded.shape, x_decoded.min(), x_decoded.max())
+
 
     ### compare original and posterior predictive (reconstructed) samples
-    utils.draw_orig_and_post_pred_sample(X, x_decoded, n=5)
+    # utils.draw_orig_and_post_pred_sample(X, x_decoded, n=5)
     
 
-    # Plot the prior generated samples over different areas of the latent space
+    # # Plot the prior generated samples over different areas of the latent space
     if latent_dim == 2: utils.plot_latent_space_timeseries(vae, n=8, figsize = (20, 10))
         
     # # ----------------------------------------------------------------------------------
@@ -111,7 +122,6 @@ if __name__ == '__main__':
     # inverse-transform scaling 
     samples = scaler.inverse_transform(samples)
     print('shape of gen samples: ', samples.shape) 
-
 
 
     # save samples

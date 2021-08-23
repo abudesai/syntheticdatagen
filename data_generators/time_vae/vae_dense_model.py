@@ -4,27 +4,16 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 warnings.filterwarnings('ignore') 
 
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Layer, Input, Flatten, Reshape
+from tensorflow.keras.layers import Dense, Input, Flatten, Reshape
 from tensorflow.keras.models import Model
-from tensorflow.keras.backend import random_normal
 from tensorflow.keras.optimizers import Adam
 
 from utils import get_mnist_data, draw_orig_and_post_pred_sample, plot_latent_space
-from vae_base import BaseVariationalAutoencoder
+from vae_base import BaseVariationalAutoencoder, Sampling
 
 
-class Sampling(Layer):
-    """Uses (z_mean, z_log_var) to sample z, the hidden state vector encoding the input."""
-    def call(self, inputs):
-        z_mean, z_log_var = inputs
-        batch = tf.shape(z_mean)[0]
-        dim = tf.shape(z_mean)[1]
-        epsilon = random_normal(shape=(batch, dim))
-        return z_mean + tf.exp(0.5 * z_log_var) * epsilon
+class VariationalAutoencoderDense(BaseVariationalAutoencoder):  
 
-
-
-class VariationalAutoencoderDense(BaseVariationalAutoencoder):
     def __init__(self,  hidden_layer_sizes,  **kwargs  ):
         super(VariationalAutoencoderDense, self).__init__(**kwargs)
 

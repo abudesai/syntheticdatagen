@@ -5,24 +5,13 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 warnings.filterwarnings('ignore') 
 
 import tensorflow as tf
-from tensorflow.keras.layers import Conv1D,  Flatten, Dense, Conv1DTranspose, Reshape, Layer, Input
+from tensorflow.keras.layers import Conv1D,  Flatten, Dense, Conv1DTranspose, Reshape, Input
 from tensorflow.keras.models import Model
 from tensorflow.keras.backend import random_normal
 from tensorflow.keras.optimizers import Adam
 
 from utils import get_mnist_data, draw_orig_and_post_pred_sample, plot_latent_space
-from vae_base import BaseVariationalAutoencoder
- 
-
-class Sampling(Layer):
-    """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
-    def call(self, inputs):
-        z_mean, z_log_var = inputs
-        batch = tf.shape(z_mean)[0]
-        dim = tf.shape(z_mean)[1]
-        epsilon = random_normal(shape=(batch, dim))
-        return z_mean + tf.exp(0.5 * z_log_var) * epsilon
-
+from vae_base import BaseVariationalAutoencoder, Sampling 
 
 
 class VariationalAutoencoderConv(BaseVariationalAutoencoder):
@@ -94,7 +83,6 @@ class VariationalAutoencoderConv(BaseVariationalAutoencoder):
         x = Flatten(name='dec_flatten')(x)
         x = Dense(self.seq_len * self.feat_dim, name="decoder_dense_final")(x)
         self.decoder_outputs = Reshape(target_shape=(self.seq_len, self.feat_dim))(x)
-        # decoder_outputs = Dense(self.seq_len * self.feat_dim, name='decoder_output')(x)
         decoder = Model(decoder_inputs, self.decoder_outputs, name="decoder")
         return decoder
 

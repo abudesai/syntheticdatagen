@@ -64,7 +64,7 @@ def draw_orig_and_post_pred_sample(orig, reconst, n):
 
 
 def plot_samples(samples, n):    
-    fig, axs = plt.subplots(n, 1, figsize=(12,5))
+    fig, axs = plt.subplots(n, 1, figsize=(6,8))
     i = 0
     for _ in range(n):
         rnd_idx = np.random.choice(len(samples))
@@ -88,7 +88,7 @@ def plot_latent_space_timeseries(vae, n, figsize):
     Z2 = [ [x, y]  for x in grid_x for y in grid_y ]
     X_recon = vae.get_prior_samples_given_Z(Z2)
     X_recon = np.squeeze(X_recon)
-    print(X_recon.shape)
+    # print('latent space X shape:', X_recon.shape)
 
     
     fig, axs = plt.subplots(grid_size, grid_size, figsize=figsize)
