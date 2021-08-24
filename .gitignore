@@ -16,3 +16,4 @@ forecast_models/nbeats_testing/log/
 __pycache__/
 *checkpoint.ipynb
 *.pyc
+~$*

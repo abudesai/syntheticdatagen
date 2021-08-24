@@ -27,7 +27,7 @@ if __name__ == '__main__':
     data_dir = './datasets/'
     # ----------------------------------------------------------------------------------
     
-    dataset = 'energy'            # sine, stocks, energy
+    dataset = 'sine'            # sine, stocks, energy
     perc_of_train_used = 5                    # 5, 10, 20, 100    
     valid_perc = 0.1
     vae_type = 'convI'           # dense, conv, convI
@@ -70,13 +70,14 @@ if __name__ == '__main__':
         vae = VAE_Conv( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[100, 200] )
     elif vae_type == 'convI':
         vae = VAE_ConvI( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[100, 200],  
-            # trend_poly=2, 
-            # num_gen_seas=3,
-            custom_seas = [ (7, 1), [30, 1], (12, 30)],     # tuples of (num_of_seasons, len_per_season)
-            use_residual_conn = False
+            trend_poly=1, 
+            num_gen_seas=2,
+            # custom_seas = [ (7, 1)] ,     # list of tuples of (num_of_seasons, len_per_season)
+            use_residual_conn = True
             )
     else:  raise Exception('wut')
 
+    # , (30, 1), (12, 30)
     
     vae.compile(optimizer=Adam())
     # vae.summary() ; sys.exit()
@@ -85,14 +86,14 @@ if __name__ == '__main__':
     early_stop_callback = EarlyStopping(monitor=early_stop_loss, min_delta = 1e-1, patience=25) 
     reduceLR = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=10)
 
-    # vae.fit(
-    #     scaled_train_data, 
-    #     batch_size = 32,
-    #     epochs=1000,
-    #     shuffle = True,
-    #     callbacks=[early_stop_callback, reduceLR],
-    #     verbose = 1
-    # )
+    vae.fit(
+        scaled_train_data, 
+        batch_size = 32,
+        epochs=1000,
+        shuffle = True,
+        callbacks=[early_stop_callback, reduceLR],
+        verbose = 1
+    )
 
     # # ----------------------------------------------------------------------------------
     # visually check reconstruction 
@@ -100,11 +101,11 @@ if __name__ == '__main__':
     # X = scaled_valid_data
 
     x_decoded = vae.predict(scaled_train_data)
-    print('x_decoded.shape', x_decoded.shape, x_decoded.min(), x_decoded.max())
+    print('x_decoded.shape', x_decoded.shape)
 
 
     ### compare original and posterior predictive (reconstructed) samples
-    # utils.draw_orig_and_post_pred_sample(X, x_decoded, n=5)
+    utils.draw_orig_and_post_pred_sample(X, x_decoded, n=5)
     
 
     # # Plot the prior generated samples over different areas of the latent space
@@ -112,21 +113,21 @@ if __name__ == '__main__':
         
     # # ----------------------------------------------------------------------------------
     # draw random prior samples
-    num_samples = N_train
-    # print("num_samples: ", num_samples)
+    # num_samples = N_train
+    # # print("num_samples: ", num_samples)
 
     samples = vae.get_prior_samples(num_samples=num_samples)
     
     utils.plot_samples(samples, n=5)
 
-    # inverse-transform scaling 
-    samples = scaler.inverse_transform(samples)
-    print('shape of gen samples: ', samples.shape) 
+    # # inverse-transform scaling 
+    # samples = scaler.inverse_transform(samples)
+    # print('shape of gen samples: ', samples.shape) 
 
 
-    # save samples
-    output_dir = './outputs/'
-    np.save(output_dir + f'vae_{vae_type}_generated_' + input_file, samples)
+    # # save samples
+    # output_dir = './outputs/'
+    # np.save(output_dir + f'vae_{vae_type}_generated_' + input_file, samples)
 
     # ----------------------------------------------------------------------------------
 

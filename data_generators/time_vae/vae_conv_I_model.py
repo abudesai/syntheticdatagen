@@ -83,24 +83,20 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
 
         # trend polynomials
         if self.trend_poly is not None and self.trend_poly > 0: 
-            print('hello trend_poly')
             trend_vals = self.trend_model(decoder_inputs)
             outputs = trend_vals if outputs is None else outputs + trend_vals 
 
         # generic seasonalities
         if self.num_gen_seas is not None and self.num_gen_seas > 0:
-            print('hello num_gen_seas')
             gen_seas_vals = self.generic_seasonal_model(decoder_inputs)
             outputs = gen_seas_vals if outputs is None else outputs + gen_seas_vals 
 
         # custom seasons
         if self.custom_seas is not None and len(self.custom_seas) > 0: 
-            print('hello custom_seas')
             cust_seas_vals = self.custom_seasonal_model(decoder_inputs)
             outputs = cust_seas_vals if outputs is None else outputs + cust_seas_vals 
 
         if self.use_residual_conn:
-            print('hello use_residual_conn')
             residuals = self._get_decoder_residual(decoder_inputs)  
             outputs = residuals if outputs is None else outputs + residuals 
 
