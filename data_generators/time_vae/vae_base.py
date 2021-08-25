@@ -45,7 +45,11 @@ class BaseVariationalAutoencoder(Model, ABC):
     def call(self, X):
         z_mean, _, _ = self.encoder(X)
         x_decoded = self.decoder(z_mean)
-        if len(x_decoded.shape) == 1: x_decoded = x_decoded.reshape((1, -1))
+        try: 
+            # this is was only required during testing when working with different data shapes
+            # throw out this try/except block later...
+            if len(x_decoded.shape) == 1: x_decoded = x_decoded.reshape((1, -1))
+        except: pass
         return x_decoded
 
 
@@ -84,7 +88,10 @@ class BaseVariationalAutoencoder(Model, ABC):
     def train_step(self, X):
         with tf.GradientTape() as tape:
             z_mean, z_log_var, z = self.encoder(X)
+
+            # reconstruction, a, b, c = self.decoder(z)  # used during testing
             reconstruction = self.decoder(z)
+
             err = tf.math.squared_difference(X, reconstruction)
             reconstruction_loss = tf.reduce_sum(err)
 

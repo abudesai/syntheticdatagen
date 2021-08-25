@@ -17,13 +17,11 @@ from vae_base import BaseVariationalAutoencoder, Sampling
 
 
 
-
-
 class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):    
 
 
     def __init__(self,  hidden_layer_sizes, trend_poly = 0, num_gen_seas = 0, custom_seas = None, 
-            use_residual_conn = True,  **kwargs   ):
+            use_scaler = True, use_residual_conn = True,  **kwargs   ):
         '''
             hidden_layer_sizes: list of number of filters in convolutional layers in encoder and residual connection of decoder. 
             trend_poly: integer for number of orders for trend component. e.g. setting trend_poly = 2 will include linear and quadratic term. 
@@ -41,6 +39,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         self.trend_poly = trend_poly
         self.num_gen_seas = num_gen_seas
         self.custom_seas = custom_seas
+        self.use_scaler = use_scaler
         self.use_residual_conn = use_residual_conn
         self.encoder = self._get_encoder()
         self.decoder = self._get_decoder() 
@@ -60,7 +59,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
 
         x = Flatten(name='enc_flatten')(x)
 
-        # save the dimensionality of this last dense layer before the hidden state layer. We need it in the decoder.
+        # save the dimensionality of this last dense layer before the hidden state layer. We need it in the decoder. It could be calculated there, but being lazy - this is easier. 
         self.encoder_last_dense_dim = x.get_shape()[-1]        
 
         z_mean = Dense(self.latent_dim, name="z_mean")(x)
@@ -79,7 +78,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         decoder_inputs = Input(shape=(self.latent_dim), name='decoder_input')    
 
         outputs = None
-        outputs = self.level_model(decoder_inputs)
+        outputs = self.level_model(decoder_inputs)        
 
         # trend polynomials
         if self.trend_poly is not None and self.trend_poly > 0: 
@@ -88,7 +87,8 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
 
         # generic seasonalities
         if self.num_gen_seas is not None and self.num_gen_seas > 0:
-            gen_seas_vals = self.generic_seasonal_model(decoder_inputs)
+            gen_seas_vals, freq, phase, amplitude = self.generic_seasonal_model(decoder_inputs)
+            # gen_seas_vals = self.generic_seasonal_model2(decoder_inputs)
             outputs = gen_seas_vals if outputs is None else outputs + gen_seas_vals 
 
         # custom seasons
@@ -100,14 +100,20 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
             residuals = self._get_decoder_residual(decoder_inputs)  
             outputs = residuals if outputs is None else outputs + residuals 
 
+
+        if self.use_scaler and outputs is not None: 
+            scale = self.scale_model(decoder_inputs)
+            outputs *= scale
+
+
         if outputs is None: 
             raise Exception('''Error: No decoder model to use. 
             You must use one or more of:
             trend, generic seasonality(ies), custom seasonality(ies), and/or residual connection. ''')
         
-        decoder = Model(decoder_inputs, outputs, name="decoder")
+        # decoder = Model(decoder_inputs, [outputs, freq, phase, amplitude], name="decoder")
+        decoder = Model(decoder_inputs, [outputs], name="decoder")
         return decoder
-
 
 
     def level_model(self, z): 
@@ -115,11 +121,24 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         level_params = Dense(self.feat_dim, name="level_params2")(level_params)
         level_params = Reshape(target_shape=(1, self.feat_dim))(level_params)      # shape: (N, 1, D)
 
-        ones_tensor = tf.ones(shape=[1, self.seq_len, 1], dtype=tf.float32)   # shape: (1, T, D)
+        level_vals = tf.repeat(level_params, repeats = self.seq_len, axis = 1)      # shape: (N, T, D)
 
-        level_vals = level_params * ones_tensor
+        # ones_tensor = tf.ones(shape=[1, self.seq_len, 1], dtype=tf.float32)   # shape: (1, T, D)
+        # level_vals = level_params * ones_tensor
+
         # print('level_vals', tf.shape(level_vals))
         return level_vals
+
+
+
+    def scale_model(self, z): 
+        scale_params = Dense(self.feat_dim, name="scale_params", activation='relu')(z)
+        scale_params = Dense(self.feat_dim, name="scale_params2")(scale_params)
+        scale_params = Reshape(target_shape=(1, self.feat_dim))(scale_params)      # shape: (N, 1, D)
+
+        scale_vals = tf.repeat(scale_params, repeats = self.seq_len, axis = 1)      # shape: (N, T, D)
+        # print('scale_vals', tf.shape(scale_vals))
+        return scale_vals
 
 
 
@@ -187,7 +206,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
 
     
 
-    def generic_seasonal_model(self, z):
+    def generic_seasonal_model(self, z):  
 
         freq = Dense(self.feat_dim * self.num_gen_seas, name="g_season_freq")(z)
         freq = Reshape(target_shape=(1, self.feat_dim, self.num_gen_seas))(freq)  # shape: (N, 1, D, S)  
@@ -195,17 +214,17 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         phase = Dense(self.feat_dim * self.num_gen_seas, name="g_season_phase")(z)
         phase = Reshape(target_shape=(1, self.feat_dim, self.num_gen_seas))(phase)  # shape: (N, 1, D, S)  
 
-        amplitude = Dense(self.feat_dim * self.num_gen_seas, name="g_season_amplitude", activation='relu')(z)
-        amplitude = Reshape(target_shape=(1, self.feat_dim, self.num_gen_seas))(amplitude)  # shape: (N, 1, D, S)  
+        amplitude = Dense(self.feat_dim * self.num_gen_seas, name="g_season_amplitude")(z)
+        amplitude = Reshape(target_shape=(1, self.feat_dim, self.num_gen_seas))(amplitude)  # shape: (N, 1, D, S)          
 
-        lin_space = K.arange(0, float(self.seq_len), 1) / self.seq_len # shape of lin_space : 1d tensor of length T
+        lin_space = K.arange(0., float(self.seq_len), 1.) / self.seq_len  # shape of lin_space : 1d tensor of length T
         lin_space = tf.reshape(lin_space, shape=(1, self.seq_len, 1, 1))      #shape: 1, T, 1, 1 
+        # print(lin_space)
 
-
-        seas_vals = amplitude * tf.math.sin( 2. * np.pi * freq * lin_space + phase )        # shape: N, T, D, S
+        seas_vals = amplitude * tf.math.sin( 2 * np.pi * freq * lin_space + phase )        # shape: N, T, D, S
         seas_vals = tf.math.reduce_sum(seas_vals, axis = -1)                    # shape: N, T, D
-
-        return seas_vals
+        
+        return seas_vals, freq, phase, amplitude
 
 
 
@@ -224,6 +243,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         if p == 1: s = s2
         else: s = K.concatenate([s1, s2], axis=0)
         s = K.cast(s, np.float32)           # shape: (S, T)
+        # print(s)
 
         seas_vals = K.dot(season_params, s, name='g_seasonal_vals')
         seas_vals = tf.transpose(seas_vals, perm=[0,2,1])     # shape: (N, T, D)
