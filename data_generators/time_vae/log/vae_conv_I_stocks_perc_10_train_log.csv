@@ -1,0 +1,6 @@
+model,data,perc,iter,train_time_in_min
+vae_conv_I,stocks,10,0,0.17
+vae_conv_I,stocks,10,1,0.24
+vae_conv_I,stocks,10,2,0.22
+vae_conv_I,stocks,10,3,0.22
+vae_conv_I,stocks,10,4,0.23

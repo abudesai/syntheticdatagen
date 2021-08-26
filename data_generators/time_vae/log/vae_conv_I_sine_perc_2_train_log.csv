@@ -1,0 +1,6 @@
+model,data,perc,iter,train_time_in_min
+vae_conv_I,sine,2,0,0.21
+vae_conv_I,sine,2,1,0.23
+vae_conv_I,sine,2,2,0.23
+vae_conv_I,sine,2,3,0.21
+vae_conv_I,sine,2,4,0.21
