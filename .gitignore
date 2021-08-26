@@ -7,7 +7,8 @@ data_generators/monte_carlo/outputs_multi/
 
 data_generators/time_vae/datasets/
 data_generators/time_vae/outputs/
-data_generators/time_vae/trained_models/
+data_generators/time_vae/log/
+data_generators/time_vae/model/
 
 forecast_models/nbeats_testing/data/
 forecast_models/nbeats_testing/outputs/

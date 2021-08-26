@@ -13,8 +13,8 @@ from config import config as cfg
 TITLE_FONT_SIZE = 16
 
 def get_training_data(input_file):
-    data = np.load(input_file)
-    return data
+    loaded = np.load(input_file)
+    return loaded['data']
 
 
 

@@ -8,16 +8,13 @@ import sys
 from datetime import datetime, timedelta
 import numpy as np , pandas as pd
 import time
-import joblib
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from vae_dense_model import VariationalAutoencoderDense as VAE_Dense
 from vae_conv_model import VariationalAutoencoderConv as VAE_Conv
 from vae_conv_I_model import VariationalAutoencoderConvInterpretable as VAE_ConvI
-from vae_wrapper import VAE_Wrapper
 from config import config as cfg
 import utils
-import write_outputs
 
 
 
@@ -27,13 +24,13 @@ if __name__ == '__main__':
     data_dir = './datasets/'
     # ----------------------------------------------------------------------------------
     
-    dataset = 'energy'            # sine, stocks, energy
-    perc_of_train_used = 10                    # 5, 10, 20, 100    
+    dataset = 'sine'            # sine, stocks, energy
+    perc_of_train_used = 5                    # 5, 10, 20, 100    
     valid_perc = 0.1
     vae_type = 'convI'           # dense, conv, convI
     # ----------------------------------------------------------------------------------
     # read data
-    input_file = f'{dataset}_subsampled_train_perc_{perc_of_train_used}.npy'
+    input_file = f'{dataset}_subsampled_train_perc_{perc_of_train_used}.npz'
     full_train_data = utils.get_training_data(data_dir + input_file)
     N, T, D = full_train_data.shape   
     print('data shape:', N, T, D) 
@@ -71,7 +68,7 @@ if __name__ == '__main__':
     elif vae_type == 'convI':
         vae = VAE_ConvI( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[100, 200],  
             # trend_poly=1, 
-            num_gen_seas=1,
+            # num_gen_seas=1,
             # custom_seas = [ (T//2, 1)] ,     # list of tuples of (num_of_seasons, len_per_season)
             use_residual_conn = True
             )
@@ -88,16 +85,27 @@ if __name__ == '__main__':
     # sys.exit()
 
 
-    vae.fit(
-        scaled_train_data, 
-        batch_size = 32,
-        epochs=1000,
-        shuffle = True,
-        callbacks=[early_stop_callback, reduceLR],
-        verbose = 1
-    )
+    # vae.fit(
+    #     scaled_train_data, 
+    #     batch_size = 32,
+    #     epochs=1000,
+    #     shuffle = True,
+    #     callbacks=[early_stop_callback, reduceLR],
+    #     verbose = 1
+    # )
 
     # sys.exit()
+    
+    # ----------------------------------------------------------------------------------
+
+    # save model 
+    model_dir = './model/'
+    pref = f'vae_{vae_type}_{dataset}_perc_{perc_of_train_used}_iter_{0}_'
+    vae.save(model_dir, pref)
+    
+    # # ----------------------------------------------------------------------------------
+    
+
     # # ----------------------------------------------------------------------------------
     # visually check reconstruction 
     X = scaled_train_data
@@ -105,17 +113,6 @@ if __name__ == '__main__':
 
     x_decoded = vae.predict(scaled_train_data)
     print('x_decoded.shape', x_decoded.shape)
-    print('means orig:', scaled_train_data.mean(), scaled_train_data.min(), scaled_train_data.max())
-    print('means dec:', x_decoded.mean(), x_decoded.min(), x_decoded.max())
-
-    # outputs, f, p, a = vae.predict(scaled_train_data)
-    # print(outputs.shape, f.shape)
-    # print(outputs[0, :, 0])
-    # print(outputs[1, :, 0])
-    # print(f[0])
-    # print(p[0])
-    # print(a[0])
-    # sys.exit()
 
 
     ### compare original and posterior predictive (reconstructed) samples
@@ -137,13 +134,25 @@ if __name__ == '__main__':
     # inverse-transform scaling 
     # samples = scaler.inverse_transform(samples)
     print('shape of gen samples: ', samples.shape) 
-
+    
+    # ----------------------------------------------------------------------------------
 
     # # save samples
     # output_dir = './outputs/'
     # np.save(output_dir + f'vae_{vae_type}_generated_' + input_file, samples)
 
     # ----------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # later.... load model 
+    new_vae = VAE_ConvI.load(model_dir, pref)
+
+    new_x_decoded = new_vae.predict(scaled_train_data)
+    print('new_x_decoded.shape', new_x_decoded.shape)
+
+    print('Preds from orig and loaded models equal: ', np.allclose( x_decoded,  new_x_decoded, atol=1e-5))
+    
+    sys.exit()
+    
 
     end = time.time()
     print(f"Total run time: {np.round((end - start)/60.0, 2)} minutes") 

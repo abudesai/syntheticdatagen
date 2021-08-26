@@ -6,6 +6,7 @@ warnings.filterwarnings('ignore')
 from abc import ABC, abstractmethod
 import numpy as np
 import tensorflow as tf
+import joblib 
 from tensorflow.keras.models import Model 
 from tensorflow.keras.layers import Layer
 from tensorflow.keras.metrics import Mean
@@ -113,6 +114,22 @@ class BaseVariationalAutoencoder(Model, ABC):
             "reconstruction_loss": self.reconstruction_loss_tracker.result(),
             "kl_loss": self.kl_loss_tracker.result(),
         }
+
+
+    def save_weights(self, model_dir, file_pref): 
+        encoder_wts = self.encoder.get_weights()
+        decoder_wts = self.decoder.get_weights()
+        joblib.dump(encoder_wts, os.path.join(model_dir, f'{file_pref}encoder_wts.h5'))
+        joblib.dump(decoder_wts, os.path.join(model_dir, f'{file_pref}decoder_wts.h5'))
+
+    
+    def load_weights(self, model_dir, file_pref):
+        encoder_wts = joblib.load(os.path.join(model_dir, f'{file_pref}encoder_wts.h5'))
+        decoder_wts = joblib.load(os.path.join(model_dir, f'{file_pref}decoder_wts.h5'))
+
+        self.encoder.set_weights(encoder_wts)
+        self.decoder.set_weights(decoder_wts)
+
 
 
 #####################################################################################################

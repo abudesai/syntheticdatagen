@@ -6,6 +6,7 @@ warnings.filterwarnings('ignore')
 
 import numpy as np
 import tensorflow as tf
+import joblib
 from tensorflow.keras import backend as K
 from tensorflow.keras.layers import Conv1D,  Flatten, Dense, Conv1DTranspose, Reshape, Input, Layer
 from tensorflow.keras.models import Model
@@ -41,6 +42,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         self.custom_seas = custom_seas
         self.use_scaler = use_scaler
         self.use_residual_conn = use_residual_conn
+
         self.encoder = self._get_encoder()
         self.decoder = self._get_decoder() 
 
@@ -283,7 +285,39 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         return residuals
 
 
+    def save(self, model_dir, file_pref): 
 
+        super().save_weights(model_dir, file_pref)
+        dict_params = {
+
+            'seq_len': self.seq_len,
+            'feat_dim': self.feat_dim,
+            'latent_dim': self.latent_dim,
+            'reconstruction_wt': self.reconstruction_wt,
+
+            'hidden_layer_sizes': self.hidden_layer_sizes,
+            'trend_poly': self.trend_poly,
+            'num_gen_seas': self.num_gen_seas,
+            'custom_seas': self.custom_seas,
+            'use_scaler': self.use_scaler,
+            'use_residual_conn': self.use_residual_conn,
+        }
+        params_file = os.path.join(model_dir, f'{file_pref}parameters.pkl') 
+        joblib.dump(dict_params, params_file)
+
+
+    @staticmethod
+    def load(model_dir, file_pref):
+        params_file = os.path.join(model_dir, f'{file_pref}parameters.pkl') 
+        dict_params = joblib.load(params_file)
+
+        vae_model = VariationalAutoencoderConvInterpretable( **dict_params )
+
+        vae_model.load_weights(model_dir, file_pref)
+        
+        vae_model.compile(optimizer=Adam())
+
+        return vae_model
 
 
 
