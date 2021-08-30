@@ -35,7 +35,7 @@ def get_mnist_data():
     return mnist_digits
 
 
-def draw_orig_and_post_pred_sample(orig, reconst, n):
+def draw_orig_and_post_pred_sample_as_img(orig, reconst, n):
 
     fig, axs = plt.subplots(n, 2, figsize=(10,6))
     i = 1
@@ -59,7 +59,28 @@ def draw_orig_and_post_pred_sample(orig, reconst, n):
         i += 1
 
     fig.suptitle("Original vs Reconstructed Data", fontsize = TITLE_FONT_SIZE)
-    fig.tight_layout()
+    # fig.tight_layout()
+    plt.show()
+
+def draw_orig_and_post_pred_sample(orig, reconst, n):
+
+    fig, axs = plt.subplots(n, 2, figsize=(10,6))
+    i = 1
+    for _ in range(n):
+        rnd_idx = np.random.choice(len(orig))
+        o = orig[rnd_idx]
+        r = reconst[rnd_idx]
+
+        plt.subplot(n, 2, i)        
+        plt.plot(o)
+        i += 1
+
+        plt.subplot(n, 2, i)     
+        plt.plot(r)
+        i += 1
+
+    fig.suptitle("Original vs Reconstructed Data", fontsize = TITLE_FONT_SIZE)
+    # fig.tight_layout()
     plt.show()
 
 
@@ -73,7 +94,7 @@ def plot_samples(samples, n):
         i += 1
 
     fig.suptitle("Generated Samples (Scaled)", fontsize = TITLE_FONT_SIZE)
-    fig.tight_layout()
+    # fig.tight_layout()
     plt.show()
 
 
@@ -102,7 +123,7 @@ def plot_latent_space_timeseries(vae, n, figsize):
     
     
     fig.suptitle("Generated Samples From 2D Embedded Space", fontsize = TITLE_FONT_SIZE)
-    fig.tight_layout()
+    # fig.tight_layout()
     plt.show()
 
 
@@ -157,6 +178,12 @@ class MinMaxScaler_Feat_Dim():
         self.input_dim = input_dim
         self.upper_bound = upper_bound
         self.lower_bound = lower_bound
+    
+
+    def fit_transform(self, X, y=None):
+        X = X.copy()
+        self.fit(X)
+        return self.transform(X)
         
 
     def fit(self, X, y=None): 
@@ -173,8 +200,7 @@ class MinMaxScaler_Feat_Dim():
         self.range_per_d = self.max_vals_per_d - self.min_vals_per_d
         self.range_per_d = np.where(self.range_per_d == 0, 1e-5, self.range_per_d)
 
-        # print(self.min_vals_per_d.shape); print(self.max_vals_per_d.shape)
-              
+        # print(self.min_vals_per_d.shape); print(self.max_vals_per_d.shape)              
         return self
     
     def transform(self, X, y=None): 
@@ -185,11 +211,6 @@ class MinMaxScaler_Feat_Dim():
         X = np.where( X < self.upper_bound, X, self.upper_bound)
         X = np.where( X > self.lower_bound, X, self.lower_bound)
         return X
-    
-    def fit_transform(self, X, y=None):
-        X = X.copy()
-        self.fit(X)
-        return self.transform(X)
         
 
     def inverse_transform(self, X):
@@ -198,6 +219,39 @@ class MinMaxScaler_Feat_Dim():
         X = X + self.min_vals_per_d
         # print(X.shape)
         return X
+
+
+class MinMaxScaler():
+    """Min Max normalizer.
+    Args:
+    - data: original data
+
+    Returns:
+    - norm_data: normalized data
+    """
+    def fit_transform(self, data): 
+        self.fit(data)
+        scaled_data = self.transform(data)
+        return scaled_data
+
+
+    def fit(self, data):    
+        self.mini = np.min(data, 0)
+        self.range = np.max(data, 0) - self.mini
+        return self
+        
+
+    def transform(self, data):
+        numerator = data - self.mini
+        scaled_data = numerator / (self.range + 1e-7)
+        return scaled_data
+
+    
+    def inverse_transform(self, data):
+        data *= self.range
+        data += self.mini
+        return data
+
 
 
 

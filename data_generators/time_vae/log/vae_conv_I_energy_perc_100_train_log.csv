@@ -1,6 +1,0 @@
-model,data,perc,iter,train_time_in_min
-vae_conv_I,energy,100,0,24.45
-vae_conv_I,energy,100,1,23.26
-vae_conv_I,energy,100,2,20.5
-vae_conv_I,energy,100,3,21.96
-vae_conv_I,energy,100,4,24.37

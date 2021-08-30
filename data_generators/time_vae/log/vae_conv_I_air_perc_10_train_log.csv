@@ -1,6 +1,0 @@
-model,data,perc,iter,train_time_in_min
-vae_conv_I,air,10,0,0.69
-vae_conv_I,air,10,1,0.72
-vae_conv_I,air,10,2,0.67
-vae_conv_I,air,10,3,0.73
-vae_conv_I,air,10,4,0.58

@@ -13,7 +13,6 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from vae_dense_model import VariationalAutoencoderDense as VAE_Dense
 from vae_conv_model import VariationalAutoencoderConv as VAE_Conv
 from vae_conv_I_model import VariationalAutoencoderConvInterpretable as VAE_ConvI
-from config import config as cfg
 import utils
 
 
@@ -21,16 +20,16 @@ import utils
 if __name__ == '__main__':
     start = time.time()
     
-    data_dir = './datasets/'
+    data_dir = "../../data/processed_orig_data/"
     # ----------------------------------------------------------------------------------
     
-    dataset = 'sine'            # sine, stocks, energy
-    perc_of_train_used = 5                    # 5, 10, 20, 100    
-    valid_perc = 0.1
-    vae_type = 'convI'           # dense, conv, convI
+    dataset = 'stocks'            # sine, stocks, energy
+    perc = 100                    # 5, 10, 20, 100    
+    valid_perc = 0.0
+    vae_type = 'vae_conv_I'           # vae_dense, vae_conv, vae_convI
     # ----------------------------------------------------------------------------------
     # read data
-    input_file = f'{dataset}_subsampled_train_perc_{perc_of_train_used}.npz'
+    input_file = f'{dataset}_subsampled_train_perc_{perc}.npz'
     full_train_data = utils.get_training_data(data_dir + input_file)
     N, T, D = full_train_data.shape   
     print('data shape:', N, T, D) 
@@ -46,10 +45,12 @@ if __name__ == '__main__':
     train_data = full_train_data[:N_train]
     valid_data = full_train_data[N_train:]
     print("train/valid shapes: ", train_data.shape, valid_data.shape)    
+    # sys.exit()
     
     # ----------------------------------------------------------------------------------
     # min max scale the data
-    scaler = utils.MinMaxScaler_Feat_Dim( scaling_len = T, input_dim = D, upper_bound = 3.0, lower_bound = -3.0 )        
+    # scaler = utils.MinMaxScaler_Feat_Dim( scaling_len = T, input_dim = D, upper_bound = 3.0, lower_bound = -3.0 ) 
+    scaler = utils.MinMaxScaler()      
     scaled_train_data = scaler.fit_transform(train_data)
 
     scaled_valid_data = scaler.transform(valid_data)
@@ -59,14 +60,15 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------
     # instantiate the model     
     
-    latent_dim = 8
+    latent_dim = 8 #min( 2*D, 2 + D // 3)
 
-    if vae_type == 'dense': 
+    if vae_type == 'vae_dense': 
         vae = VAE_Dense( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[200,100], )
-    elif vae_type == 'conv':
+    elif vae_type == 'vae_conv':
         vae = VAE_Conv( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[100, 200] )
-    elif vae_type == 'convI':
-        vae = VAE_ConvI( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[100, 200],  
+    elif vae_type == 'vae_conv_I':
+        vae = VAE_ConvI( seq_len=T,  feat_dim = D, latent_dim = latent_dim, hidden_layer_sizes=[50, 100, 200],  
+            reconstruction_wt = 3.0,
             # trend_poly=1, 
             # num_gen_seas=1,
             # custom_seas = [ (T//2, 1)] ,     # list of tuples of (num_of_seasons, len_per_season)
@@ -85,23 +87,23 @@ if __name__ == '__main__':
     # sys.exit()
 
 
-    # vae.fit(
-    #     scaled_train_data, 
-    #     batch_size = 32,
-    #     epochs=1000,
-    #     shuffle = True,
-    #     callbacks=[early_stop_callback, reduceLR],
-    #     verbose = 1
-    # )
+    vae.fit(
+        scaled_train_data, 
+        batch_size = 32,
+        epochs=1000,
+        shuffle = True,
+        callbacks=[early_stop_callback, reduceLR],
+        verbose = 1
+    )
 
     # sys.exit()
     
     # ----------------------------------------------------------------------------------
 
     # save model 
-    model_dir = './model/'
-    pref = f'vae_{vae_type}_{dataset}_perc_{perc_of_train_used}_iter_{0}_'
-    vae.save(model_dir, pref)
+    # model_dir = './model/'
+    # pref = f'vae_{vae_type}_{dataset}_perc_{perc}_iter_{0}_'
+    # vae.save(model_dir, pref)
     
     # # ----------------------------------------------------------------------------------
     
@@ -137,21 +139,22 @@ if __name__ == '__main__':
     
     # ----------------------------------------------------------------------------------
 
-    # # save samples
-    # output_dir = './outputs/'
-    # np.save(output_dir + f'vae_{vae_type}_generated_' + input_file, samples)
+    # save samples
+    output_dir = "../../data/generated_data/"
+    samples_fpath = f'{vae_type}_gen_samples_{dataset}_perc_{perc}.npz'  
+    np.savez_compressed(os.path.join( output_dir, samples_fpath), data=samples)
 
     # ----------------------------------------------------------------------------------
     # ----------------------------------------------------------------------------------
     # later.... load model 
-    new_vae = VAE_ConvI.load(model_dir, pref)
+    # new_vae = VAE_ConvI.load(model_dir, pref)
 
-    new_x_decoded = new_vae.predict(scaled_train_data)
-    print('new_x_decoded.shape', new_x_decoded.shape)
+    # new_x_decoded = new_vae.predict(scaled_train_data)
+    # print('new_x_decoded.shape', new_x_decoded.shape)
 
-    print('Preds from orig and loaded models equal: ', np.allclose( x_decoded,  new_x_decoded, atol=1e-5))
+    # print('Preds from orig and loaded models equal: ', np.allclose( x_decoded,  new_x_decoded, atol=1e-5))
     
-    sys.exit()
+    # sys.exit()
     
 
     end = time.time()

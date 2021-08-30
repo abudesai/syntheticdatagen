@@ -11,7 +11,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Layer
 from tensorflow.keras.metrics import Mean
 from tensorflow.keras.backend import random_normal
- 
+from tensorflow.keras.losses import binary_crossentropy 
 
 class Sampling(Layer):
     """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
@@ -21,6 +21,16 @@ class Sampling(Layer):
         dim = tf.shape(z_mean)[1]
         epsilon = random_normal(shape=(batch, dim))
         return z_mean + tf.exp(0.5 * z_log_var) * epsilon
+
+
+# class Sampling(Layer):
+#     """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
+#     def call(self, inputs):
+#         minvals, maxvals = inputs
+#         batch = tf.shape(minvals)[0]
+#         dim = tf.shape(minvals)[1]
+#         vals = tf.random.uniform(shape=(batch, dim), minval = minvals, maxval = maxvals)
+#         return vals
 
 
 class BaseVariationalAutoencoder(Model, ABC):
@@ -63,8 +73,10 @@ class BaseVariationalAutoencoder(Model, ABC):
 
     def get_prior_samples(self, num_samples):
         Z = np.random.randn(num_samples, self.latent_dim)
+        # Z = np.random.uniform(0, 1, size = (num_samples, self.latent_dim))
         samples = self.decoder.predict(Z)
         return samples
+
 
     def get_prior_samples_given_Z(self, Z):
         samples = self.decoder.predict(Z)
@@ -98,6 +110,7 @@ class BaseVariationalAutoencoder(Model, ABC):
 
             kl_loss = -0.5 * (1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var))
             kl_loss = tf.reduce_sum(tf.reduce_sum(kl_loss, axis=1))
+            # kl_loss = kl_loss / self.latent_dim
 
             total_loss = self.reconstruction_wt * reconstruction_loss + kl_loss
 
@@ -131,6 +144,29 @@ class BaseVariationalAutoencoder(Model, ABC):
         self.decoder.set_weights(decoder_wts)
 
 
+    def save(self, model_dir, file_pref): 
+
+        self.save_weights(model_dir, file_pref)
+        dict_params = {
+
+            'seq_len': self.seq_len,
+            'feat_dim': self.feat_dim,
+            'latent_dim': self.latent_dim,
+            'reconstruction_wt': self.reconstruction_wt,
+            'hidden_layer_sizes': self.hidden_layer_sizes,
+        }
+        params_file = os.path.join(model_dir, f'{file_pref}parameters.pkl') 
+        joblib.dump(dict_params, params_file)
+
+
+    @staticmethod
+    def load(model_dir, file_pref):
+        params_file = os.path.join(model_dir, f'{file_pref}parameters.pkl') 
+        dict_params = joblib.load(params_file)
+        vae_model = VariationalAutoencoderConvInterpretable( **dict_params )
+        vae_model.load_weights(model_dir, file_pref)        
+        vae_model.compile(optimizer=Adam())
+        return vae_model 
 
 #####################################################################################################
 #####################################################################################################

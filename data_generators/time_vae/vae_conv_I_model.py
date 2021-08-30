@@ -8,7 +8,7 @@ import numpy as np
 import tensorflow as tf
 import joblib
 from tensorflow.keras import backend as K
-from tensorflow.keras.layers import Conv1D,  Flatten, Dense, Conv1DTranspose, Reshape, Input, Layer
+from tensorflow.keras.layers import Conv1D,  Flatten, Dense, Conv1DTranspose, Reshape, Input, Layer, Activation
 from tensorflow.keras.models import Model
 from tensorflow.keras.backend import random_normal
 from tensorflow.keras.optimizers import Adam
@@ -22,7 +22,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
 
 
     def __init__(self,  hidden_layer_sizes, trend_poly = 0, num_gen_seas = 0, custom_seas = None, 
-            use_scaler = True, use_residual_conn = True,  **kwargs   ):
+            use_scaler = False, use_residual_conn = True,  **kwargs   ):
         '''
             hidden_layer_sizes: list of number of filters in convolutional layers in encoder and residual connection of decoder. 
             trend_poly: integer for number of orders for trend component. e.g. setting trend_poly = 2 will include linear and quadratic term. 
@@ -98,6 +98,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
             cust_seas_vals = self.custom_seasonal_model(decoder_inputs)
             outputs = cust_seas_vals if outputs is None else outputs + cust_seas_vals 
 
+
         if self.use_residual_conn:
             residuals = self._get_decoder_residual(decoder_inputs)  
             outputs = residuals if outputs is None else outputs + residuals 
@@ -107,6 +108,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
             scale = self.scale_model(decoder_inputs)
             outputs *= scale
 
+        # outputs = Activation(activation='sigmoid')(outputs)
 
         if outputs is None: 
             raise Exception('''Error: No decoder model to use. 
@@ -317,7 +319,7 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
         
         vae_model.compile(optimizer=Adam())
 
-        return vae_model
+        return vae_model 
 
 
 
