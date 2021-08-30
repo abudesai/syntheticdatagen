@@ -98,6 +98,28 @@ class BaseVariationalAutoencoder(Model, ABC):
         self.decoder.summary()
 
 
+
+    def _get_reconstruction_loss(self, X, X_recons): 
+
+        def get_reconst_loss_by_axis(X, X_c, axis): 
+            x_r = tf.reduce_mean(X, axis = axis)
+            x_c_r = tf.reduce_mean(X_recons, axis = axis)
+            err = tf.math.squared_difference(x_r, x_c_r)
+            loss = tf.reduce_sum(err)
+            return loss
+
+        reconst_loss = 0        
+
+        # overall    
+        err = tf.math.squared_difference(X, X_recons)
+        reconst_loss = tf.reduce_sum(err)
+      
+        reconst_loss += get_reconst_loss_by_axis(X, X_recons, axis=[2])     # by time axis        
+        # reconst_loss += get_reconst_loss_by_axis(X, X_recons, axis=[1])    # by feature axis
+        return reconst_loss
+
+
+
     def train_step(self, X):
         with tf.GradientTape() as tape:
             z_mean, z_log_var, z = self.encoder(X)
@@ -105,8 +127,7 @@ class BaseVariationalAutoencoder(Model, ABC):
             # reconstruction, a, b, c = self.decoder(z)  # used during testing
             reconstruction = self.decoder(z)
 
-            err = tf.math.squared_difference(X, reconstruction)
-            reconstruction_loss = tf.reduce_sum(err)
+            reconstruction_loss = self._get_reconstruction_loss(X, reconstruction)
 
             kl_loss = -0.5 * (1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var))
             kl_loss = tf.reduce_sum(tf.reduce_sum(kl_loss, axis=1))
