@@ -123,7 +123,7 @@ def discriminative_score_metrics (ori_data, generated_data):
     _, step_d_loss = sess.run([d_solver, d_loss], 
                               feed_dict={X: X_mb, T: T_mb, X_hat: X_hat_mb, T_hat: T_hat_mb})    
     
-    if itt % 100 == 0: print("itt:", itt, 'dloss:', step_d_loss)
+    if itt % 250 == 0: print("itt:", itt, 'dloss:', step_d_loss)
     
   ## Test the performance on the testing set    
   y_pred_real_curr, y_pred_fake_curr = sess.run([y_pred_real, y_pred_fake], 
