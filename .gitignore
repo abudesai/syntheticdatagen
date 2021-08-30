@@ -18,3 +18,5 @@ __pycache__/
 *checkpoint.ipynb
 *.pyc
 ~$*
+*.npz
+*.npy
