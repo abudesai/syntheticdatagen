@@ -1,2 +1,2 @@
 model,data,perc,iter,latent_dim,loss,reconst_loss,kl_loss,train_time_in_min
-vae_conv_I,stocks,100,0,10,2.345,0.452,0.084,7.92
+vae_conv_I,stocks,100,0,8,98.361,7.31,61.813,4.06
