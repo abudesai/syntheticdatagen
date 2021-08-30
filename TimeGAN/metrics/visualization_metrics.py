@@ -32,8 +32,8 @@ def visualization (ori_data, generated_data, analysis):
     - analysis: tsne or pca
   """  
   # Analysis sample size (for faster computation)
-  anal_sample_no = min([1000, len(ori_data)])
-  idx = np.random.permutation(len(ori_data))[:anal_sample_no]
+  num_samples = min([1000, len(ori_data)])
+  idx = np.random.permutation(len(ori_data))[:num_samples]
     
   # Data preprocessing
   ori_data = np.asarray(ori_data)
@@ -44,7 +44,7 @@ def visualization (ori_data, generated_data, analysis):
   
   no, seq_len, dim = ori_data.shape  
   
-  for i in range(anal_sample_no):
+  for i in range(num_samples):
     if (i == 0):
       prep_data = np.reshape(np.mean(ori_data[0,:,:], 1), [1,seq_len])
       prep_data_hat = np.reshape(np.mean(generated_data[0,:,:],1), [1,seq_len])
@@ -55,7 +55,10 @@ def visualization (ori_data, generated_data, analysis):
                                       np.reshape(np.mean(generated_data[i,:,:],1), [1,seq_len])))
     
   # Visualization parameter        
-  colors = ["red" for i in range(anal_sample_no)] + ["blue" for i in range(anal_sample_no)]    
+  colors = ["red" for i in range(num_samples)] + ["blue" for i in range(num_samples)] 
+#   print('prep shapes:', prep_data.shape, prep_data_hat.shape)
+#   print('prep means:', prep_data.mean(axis=0), prep_data_hat.mean(axis=0))  
+#   print("global mean", prep_data.mean(), prep_data_hat.mean())
     
   if analysis == 'pca':
     # PCA Analysis
@@ -67,9 +70,9 @@ def visualization (ori_data, generated_data, analysis):
     # Plotting
     f, ax = plt.subplots(1)    
     plt.scatter(pca_results[:,0], pca_results[:,1],
-                c = colors[:anal_sample_no], alpha = 0.2, label = "Original")
+                c = colors[:num_samples], alpha = 0.2, label = "Original")
     plt.scatter(pca_hat_results[:,0], pca_hat_results[:,1], 
-                c = colors[anal_sample_no:], alpha = 0.2, label = "Synthetic")
+                c = colors[num_samples:], alpha = 0.2, label = "Synthetic")
   
     ax.legend()  
     plt.title('PCA plot')
@@ -85,16 +88,16 @@ def visualization (ori_data, generated_data, analysis):
     prep_data_final = np.concatenate((prep_data, prep_data_hat), axis = 0)
     
     # TSNE anlaysis
-    tsne = TSNE(n_components = 2, verbose = 1, perplexity = 40, n_iter = 300)
+    tsne = TSNE(n_components = 2, perplexity = 40, n_iter = 300)
     tsne_results = tsne.fit_transform(prep_data_final)
       
     # Plotting
     f, ax = plt.subplots(1)
       
-    plt.scatter(tsne_results[:anal_sample_no,0], tsne_results[:anal_sample_no,1], 
-                c = colors[:anal_sample_no], alpha = 0.2, label = "Original")
-    plt.scatter(tsne_results[anal_sample_no:,0], tsne_results[anal_sample_no:,1], 
-                c = colors[anal_sample_no:], alpha = 0.2, label = "Synthetic")
+    plt.scatter(tsne_results[:num_samples,0], tsne_results[:num_samples,1], 
+                c = colors[:num_samples], alpha = 0.2, label = "Original")
+    plt.scatter(tsne_results[num_samples:,0], tsne_results[num_samples:,1], 
+                c = colors[num_samples:], alpha = 0.2, label = "Synthetic")
   
     ax.legend()
       
