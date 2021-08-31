@@ -135,5 +135,7 @@ def discriminative_score_metrics (ori_data, generated_data):
   # Compute the accuracy
   acc = accuracy_score(y_label_final, (y_pred_final>0.5))
   discriminative_score = np.abs(0.5-acc)
-    
+  
+  tf.keras.backend.clear_session()  
+
   return discriminative_score  

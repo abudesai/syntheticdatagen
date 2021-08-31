@@ -100,7 +100,6 @@ def predictive_score_metrics (ori_data, generated_data, iterations = 2500):
     Y_mb = list(np.reshape(generated_data[i][1:,(dim-1)],[len(generated_data[i][1:,(dim-1)]),1]) for i in train_idx)  
     
 #     print('mini batch shapes:', X_mb[0].shape, Y_mb[0].shape)
-#     sys.exit()
           
     # Train predictor
     _, step_p_loss = sess.run([p_solver, p_loss], feed_dict={X: X_mb, T: T_mb, Y: Y_mb})  
@@ -128,5 +127,7 @@ def predictive_score_metrics (ori_data, generated_data, iterations = 2500):
   predictive_score = MAE_temp / no 
   print('Final p_loss', p_loss, 'predictive_score:', predictive_score)
     
+  tf.keras.backend.clear_session()  
+
   return predictive_score
     

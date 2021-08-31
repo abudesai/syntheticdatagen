@@ -23,7 +23,7 @@ if __name__ == '__main__':
     data_dir = "../../data/processed_orig_data/"
     # ----------------------------------------------------------------------------------
     
-    dataset = 'stocks'            # sine, stocks, energy
+    dataset = 'sine'            # sine, stocks, energy
     perc = 100                    # 5, 10, 20, 100    
     valid_perc = 0.0
     vae_type = 'vae_conv_I'           # vae_dense, vae_conv, vae_convI
@@ -56,6 +56,7 @@ if __name__ == '__main__':
     scaled_valid_data = scaler.transform(valid_data)
     # joblib.dump(scaler, 'scaler.save')  
     # print("train/valid shapes: ", scaled_train_data.shape, scaled_valid_data.shape)
+    # sys.exit()
 
     # ----------------------------------------------------------------------------------
     # instantiate the model     
@@ -75,38 +76,35 @@ if __name__ == '__main__':
             use_residual_conn = True
             )
     else:  raise Exception('wut')
-
-    # , (30, 1), (12, 30)
     
     vae.compile(optimizer=Adam())
     # vae.summary() ; sys.exit()
+    # ----------------------------------------------------------------------------------
 
     early_stop_loss = 'loss'
     early_stop_callback = EarlyStopping(monitor=early_stop_loss, min_delta = 1e-1, patience=50) 
     reduceLR = ReduceLROnPlateau(monitor='loss', factor=0.1, patience=10)
     # sys.exit()
 
-
-    vae.fit(
+    print("Running training...")
+    r = vae.fit(
         scaled_train_data, 
         batch_size = 32,
-        epochs=1000,
+        epochs=100,
         shuffle = True,
         callbacks=[early_stop_callback, reduceLR],
-        verbose = 1
+        verbose = 0
     )
 
-    # sys.exit()
-    
+    print("Final losses: ")
+    # sys.exit()    
     # ----------------------------------------------------------------------------------
 
     # save model 
     # model_dir = './model/'
     # pref = f'vae_{vae_type}_{dataset}_perc_{perc}_iter_{0}_'
     # vae.save(model_dir, pref)
-    
-    # # ----------------------------------------------------------------------------------
-    
+        
 
     # # ----------------------------------------------------------------------------------
     # visually check reconstruction 
@@ -116,10 +114,8 @@ if __name__ == '__main__':
     x_decoded = vae.predict(scaled_train_data)
     print('x_decoded.shape', x_decoded.shape)
 
-
     ### compare original and posterior predictive (reconstructed) samples
-    utils.draw_orig_and_post_pred_sample(X, x_decoded, n=5)
-    
+    utils.draw_orig_and_post_pred_sample(X, x_decoded, n=5)    
 
     # # Plot the prior generated samples over different areas of the latent space
     if latent_dim == 2: utils.plot_latent_space_timeseries(vae, n=8, figsize = (20, 10))
@@ -134,9 +130,16 @@ if __name__ == '__main__':
     utils.plot_samples(samples, n=5)
 
     # inverse-transform scaling 
-    # samples = scaler.inverse_transform(samples)
+    samples = scaler.inverse_transform(samples)
     print('shape of gen samples: ', samples.shape) 
-    
+
+    print('-'*80)
+    print('orig scale orig data means: ', train_data.mean(axis=0).mean(axis=1))
+    print('orig scale gen data means: ', samples.mean(axis=0).mean(axis=1))
+    print('-'*80)
+    print('scaled orig data means: ', scaled_train_data.mean(axis=0).mean(axis=1))    
+    print('scaled decoded data means: ', x_decoded.mean(axis=0).mean(axis=1))    
+    print('-'*80)
     # ----------------------------------------------------------------------------------
 
     # save samples
