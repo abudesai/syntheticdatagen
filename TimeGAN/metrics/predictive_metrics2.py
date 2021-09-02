@@ -48,7 +48,7 @@ class Predictor():
 
     def build_predictor(self,): 
         input_ =  Input(shape=(self.seq_len-1, self.dim-1), name='X_real_input')     
-        x = GRU(units = self.hidden_dim, return_sequences=True, activation = 'tanh', name='p_gru')(input_)
+        x = GRU(units = self.hidden_dim, return_sequences=True, activation = 'tanh', name='p_gru', dtype='float64')(input_)
         x = TimeDistributed(layer = Dense(units = 1) )(x)
         output = tf.squeeze(x)
         model = Model(input_, output, name = 'predictor')
