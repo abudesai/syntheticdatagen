@@ -126,7 +126,8 @@ def predictive_score_metrics (orig_data, generated_data, epochs = 2500):
         X_train, Y_train,
         epochs = epochs, 
         shuffle = True, 
-        verbose=0
+        verbose=0,
+        validation_split=0.1
     )
     
     y_test_hat = predictor.predict(X_test)
