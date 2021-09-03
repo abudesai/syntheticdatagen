@@ -40,15 +40,14 @@ class Predictor():
         self.hidden_dim = hidden_dim
         self.predictor = self.build_predictor()
 
-        # self.model.compile(optimizer=Adam())
         self.loss_func = MeanAbsoluteError()
         self.optimizer = tf.keras.optimizers.Adam()
-        self.predictor.compile(loss = self.loss_func, optimizer = self.optimizer, run_eagerly=True)
+        self.predictor.compile(loss = self.loss_func, optimizer = self.optimizer)
 
 
     def build_predictor(self,): 
         input_ =  Input(shape=(self.seq_len-1, self.dim-1), name='X_real_input')     
-        x = GRU(units = self.hidden_dim, return_sequences=True, activation = 'tanh', name='p_gru', dtype='float64')(input_)
+        x = GRU(units = self.hidden_dim, return_sequences=True, activation = 'tanh', name='p_gru')(input_)
         x = TimeDistributed(layer = Dense(units = 1) )(x)
         output = tf.squeeze(x)
         model = Model(input_, output, name = 'predictor')
@@ -126,7 +125,7 @@ def predictive_score_metrics (orig_data, generated_data, epochs = 2500):
         X_train, Y_train,
         epochs = epochs, 
         shuffle = True, 
-        verbose=0,
+        verbose=0, 
         validation_split=0.1
     )
     

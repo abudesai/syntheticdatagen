@@ -1,5 +1,3 @@
-
-
 # Necessary Packages
 import os, warnings, sys
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
@@ -46,7 +44,7 @@ class Discriminator():
 
     def fit(self, X, y, epochs, verbose = 0, validation_split = 0.1, shuffle = True):
         loss_to_monitor = 'loss' if validation_split is None else 'val_loss'
-        early_stop_callback = EarlyStopping(monitor=loss_to_monitor, min_delta = 1e-4, patience=100) 
+        early_stop_callback = EarlyStopping(monitor=loss_to_monitor, min_delta = 1e-4, patience=50) 
         print_callback = PrintLossPerNthEpoch(print_period = 50)
 
         Y_hat = self.discriminator.fit(X, y, 
@@ -126,6 +124,7 @@ def discriminative_score_metrics (ori_data, generated_data, epochs = 500, verbos
         epochs = epochs, 
         verbose = verbose,
         shuffle = True,
+        validation_split=0.1
     )
 
     y_test_hat = discriminator.predict(X_test)
