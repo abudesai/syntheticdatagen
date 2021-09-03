@@ -61,7 +61,8 @@ class VariationalAutoencoderConvInterpretable(BaseVariationalAutoencoder):
 
         x = Flatten(name='enc_flatten')(x)
 
-        # save the dimensionality of this last dense layer before the hidden state layer. We need it in the decoder. It could be calculated there, but being lazy - this is easier. 
+        # save the dimensionality of this last dense layer before the hidden state layer. We need it in the decoder. 
+        # It could be calculated there, but being lazy - this is easier. 
         self.encoder_last_dense_dim = x.get_shape()[-1]        
 
         z_mean = Dense(self.latent_dim, name="z_mean")(x)
