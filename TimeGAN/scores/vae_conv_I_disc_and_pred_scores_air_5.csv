@@ -1,0 +1,2 @@
+model,dataset,train_perc,iters,disc_epochs,disc_mean,disc_CI,pred_epochs,pred_mean,pred_CI
+vae_conv_I,air,5,2,30,0.4972,0.0357,30,0.10980000346899033,0.1533

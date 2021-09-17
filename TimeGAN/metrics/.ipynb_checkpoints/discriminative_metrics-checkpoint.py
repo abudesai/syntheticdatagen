@@ -50,7 +50,7 @@ def discriminative_score_metrics (ori_data, generated_data):
   ## Builde a post-hoc RNN discriminator network 
   # Network parameters
   hidden_dim = int(dim/2)
-  iterations = 4000
+  iterations = 2500
   batch_size = 128
 
   tf.compat.v1.disable_eager_execution()
@@ -123,7 +123,7 @@ def discriminative_score_metrics (ori_data, generated_data):
     _, step_d_loss = sess.run([d_solver, d_loss], 
                               feed_dict={X: X_mb, T: T_mb, X_hat: X_hat_mb, T_hat: T_hat_mb})    
     
-    if itt % 100 == 0: print("itt:", itt, 'dloss:', step_d_loss)
+    if itt % 250 == 0: print("itt:", itt, 'dloss:', step_d_loss)
     
   ## Test the performance on the testing set    
   y_pred_real_curr, y_pred_fake_curr = sess.run([y_pred_real, y_pred_fake], 
@@ -135,5 +135,7 @@ def discriminative_score_metrics (ori_data, generated_data):
   # Compute the accuracy
   acc = accuracy_score(y_label_final, (y_pred_final>0.5))
   discriminative_score = np.abs(0.5-acc)
-    
+  
+  tf.keras.backend.clear_session()  
+
   return discriminative_score  
