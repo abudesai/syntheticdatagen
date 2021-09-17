@@ -12,7 +12,6 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.metrics import MeanSquaredError, Mean
 from tensorflow.keras.callbacks import Callback, EarlyStopping
 import sys 
-# from utils import train_test_divide, extract_time, batch_generator
 
 
 class PrintLossPerNthEpoch(Callback):

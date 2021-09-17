@@ -18,7 +18,6 @@ from tensorflow.keras.metrics import MeanSquaredError, Mean
 from tensorflow.keras.callbacks import Callback, EarlyStopping
 
 
-
 class Discriminator():
     def __init__(self, seq_len, dim, hidden_dim):
         self.seq_len = seq_len
