@@ -6,7 +6,7 @@ warnings.filterwarnings('ignore')
 import sys
 import tensorflow as tf
 from tensorflow.keras.models import Model 
-from tensorflow.keras.layers import Layer, GRUCell, RNN, GRU, Flatten, Dense, Input
+from tensorflow.keras.layers import Layer, GRUCell, RNN, GRU, Flatten, Dense, Input, Reshape
 from tensorflow.keras.models import Model
 from tensorflow.keras.losses import BinaryCrossentropy
 import numpy as np
@@ -35,8 +35,8 @@ class Discriminator():
         input_ =  Input(shape=(self.seq_len, self.dim), name='disc_input')        
         x = GRU(units = self.hidden_dim, activation = 'tanh', name='d_gru')(input_)
         x = Flatten(name='d_flatten')(x)
-        x = Dense(units = 1)(x)        
-        output = tf.squeeze(x)
+        x = Dense(units = 1)(x)  
+        output = Flatten()(x)
         model = Model(input_, output, name = 'discriminator')
         return model
       
@@ -61,7 +61,8 @@ class Discriminator():
 
 
     def predict(self, X): 
-        Y_hat = self.discriminator.predict(X, batch_size=X.shape[0])
+#         Y_hat = self.discriminator.predict(X, batch_size=X.shape[0])
+        Y_hat = self.discriminator.predict(X)
         return Y_hat
 
     def summary(self):
