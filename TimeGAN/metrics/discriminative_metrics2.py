@@ -51,7 +51,7 @@ class Discriminator():
             verbose = verbose, 
             validation_split = validation_split,
             shuffle = shuffle,
-            callbacks = [print_callback, early_stop_callback]
+            callbacks = [print_callback]
             )
         return Y_hat
 
@@ -61,7 +61,7 @@ class Discriminator():
 
 
     def predict(self, X): 
-        Y_hat = self.discriminator.predict(X)
+        Y_hat = self.discriminator.predict(X, batch_size=X.shape[0])
         return Y_hat
 
     def summary(self):
