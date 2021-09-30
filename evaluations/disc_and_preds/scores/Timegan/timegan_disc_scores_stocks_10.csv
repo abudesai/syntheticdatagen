@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+disc_score,timegan,stocks,10,5,500,0.1507,0.1630

@@ -1,2 +1,2 @@
 model,data,perc,iter,latent_dim,loss,reconst_loss,kl_loss,train_time_in_min
-vae_conv_I,sine,5,0,10,128.346,11.469,93.94,1.18
+vae_conv_I,sine,5,0,10,387.001,57.552,218.373,1.59

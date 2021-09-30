@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+pred_score,orig,stocks2,5,5,500,0.0776,0.0017

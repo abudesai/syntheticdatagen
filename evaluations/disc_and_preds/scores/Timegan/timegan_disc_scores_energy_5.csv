@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+disc_score,timegan,energy,5,5,500,0.4974,0.0032

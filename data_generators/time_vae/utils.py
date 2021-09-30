@@ -253,7 +253,15 @@ class MinMaxScaler():
         return data
 
 
+def split_list_into_lists(list_of_items, num_splits):
+    num_per_split = (len(list_of_items) // num_splits) + 1
 
+    list_of_split_lists = []
+    for i in range(num_splits):
+        list_of_split_lists.append(list_of_items[i * num_per_split : (i + 1) * num_per_split ])
+
+    return list_of_split_lists
+    
 
 if __name__ == '__main__':
 

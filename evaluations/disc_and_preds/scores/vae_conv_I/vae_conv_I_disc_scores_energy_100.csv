@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+disc_score,vae_conv_I,energy,100,5,500,0.4979,0.0055

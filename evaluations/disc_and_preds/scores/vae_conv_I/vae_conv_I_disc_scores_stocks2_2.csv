@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+disc_score,vae_conv_I,stocks2,2,5,500,0.3182,0.1645

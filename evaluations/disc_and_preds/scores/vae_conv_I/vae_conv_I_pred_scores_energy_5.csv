@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+pred_score,vae_conv_I,energy,5,5,500,0.2624,0.0015

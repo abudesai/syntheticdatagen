@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+disc_score,rcgan,sine,2,5,500,0.4925,0.0208

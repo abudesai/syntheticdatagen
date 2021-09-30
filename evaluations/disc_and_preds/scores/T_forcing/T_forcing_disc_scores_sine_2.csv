@@ -1,0 +1,2 @@
+metric,model,dataset,train_perc,iters,epochs,mean,conf_int
+disc_score,T_forcing,sine,2,5,500,0.2950,0.3205
